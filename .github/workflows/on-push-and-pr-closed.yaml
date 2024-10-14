@@ -1,4 +1,4 @@
-name: Run Selenium Tests - On Push and PR closed
+name: Run Selenium Tests - On Push and PR Closed
 
 on:
   push:
@@ -17,25 +17,41 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install Google Chrome (Specific Version 129)
+    - name: Install dependencies (curl, jq)
       run: |
+        sudo apt-get update
+        sudo apt-get install -y curl jq
+
+    - name: Fetch Latest Stable ChromeDriver Version
+      run: |
+        # Get the latest stable version of ChromeDriver
+        curl -s https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json | \
+        jq -r '.channels.Stable.version' > chrome_version.txt
+
+        # Extract the download URL for the ChromeDriver
+        CHROME_VERSION=$(cat chrome_version.txt)
+        DRIVER_URL=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json | \
+        jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.downloads.chrome | map(select(.platform == "linux64"))[0].url')
+        
+        # Download the ChromeDriver using the retrieved URL
+        wget $DRIVER_URL -O chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
+        rm chromedriver_linux64.zip
+
+    - name: Install Google Chrome
+      run: |
+        # Install the latest stable version of Google Chrome
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
         sudo apt-get install -y libappindicator3-1 fonts-liberation
 
-    - name: Install ChromeDriver (Specific Version 129)
-      run: |
-        wget https://chromedriver.storage.googleapis.com/129.0.6668.100/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/
-        sudo chown root:root /usr/local/bin/chromedriver
-        sudo chmod +x /usr/local/bin/chromedriver
-        rm chromedriver_linux64.zip # Clean up zip file to free space
-
-    - name: Install Node.js and npm (via NodeSource for latest versions)
+    - name: Install Node.js and npm
       run: |
         curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-        sudo apt-get install -y nodejs npm
+        sudo apt-get install -y nodejs
+        sudo apt-get install -y npm
 
     - name: Install dependencies
       run: npm install
