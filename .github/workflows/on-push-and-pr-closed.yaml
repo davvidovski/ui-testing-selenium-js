@@ -1,4 +1,4 @@
-name: Run Selenium Tests - On Push and PR Closed
+name: Run Selenium Tests - On Push and PR closed
 
 on:
   push:
@@ -17,55 +17,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install dependencies (curl, jq)
+    - name: Install Google Chrome (Specific Version 129)
       run: |
         sudo apt-get update
-        sudo apt-get install -y curl jq
+        sudo apt-get install -y wget unzip
+        sudo apt-get install -y google-chrome-stable
 
-    - name: Install Google Chrome
+    - name: Download ChromeDriver (Specific Version 129)
       run: |
-        # Install the latest stable version of Google Chrome
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt install -y ./google-chrome-stable_current_amd64.deb
-        sudo apt-get install -y libappindicator3-1 fonts-liberation
-
-    - name: Fetch Latest Stable ChromeDriver Version
-      run: |
-        # Fetch the latest stable ChromeDriver version from the API
-        RESPONSE=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)
-        
-        # Check if the response is not empty
-        if [ -z "$RESPONSE" ]; then
-          echo "Failed to fetch ChromeDriver version data."
-          exit 1
-        fi
-
-        # Extract Chrome version
-        CHROME_VERSION=$(echo "$RESPONSE" | jq -r '.channels.Stable.version')
-
-        # Check if version is not null
-        if [ "$CHROME_VERSION" == "null" ] || [ -z "$CHROME_VERSION" ]; then
-          echo "Failed to parse Chrome version."
-          exit 1
-        fi
-
-        echo "Latest Chrome version: $CHROME_VERSION"
-
-        # Get the download URL for ChromeDriver
-        DRIVER_URL=$(echo "$RESPONSE" | jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.downloads.chrome | map(select(.platform == "linux64"))[0].url')
-
-        # Check if URL is valid
-        if [ -z "$DRIVER_URL" ] || [ "$DRIVER_URL" == "null" ]; then
-          echo "Failed to fetch ChromeDriver URL."
-          exit 1
-        fi
-
-        # Download and install ChromeDriver
-        wget $DRIVER_URL -O chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
+        wget https://storage.googleapis.com/chrome-for-testing-public/129.0.6668.100/linux64/chromedriver-linux64.zip
+        unzip chromedriver-linux64.zip
         sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
-        rm chromedriver_linux64.zip
+        rm chromedriver-linux64.zip
 
     - name: Install Node.js and npm
       run: |
