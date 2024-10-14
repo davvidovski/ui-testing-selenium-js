@@ -32,8 +32,16 @@ jobs:
       run: |
         CHROME_VERSION=$(google-chrome --version | sed 's/[^0-9]*\([0-9]*\)\..*/\1/')
         echo "Chrome version is: $CHROME_VERSION"
-        # Fallback to version 128 if 129 is not available
-        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION" || curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_128")
+        
+        # Try to download the exact version first
+        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+        
+        # If the exact version is not available, fallback to version 128 or other known versions
+        if [ -z "$LATEST_DRIVER" ]; then
+          echo "ChromeDriver version for Chrome $CHROME_VERSION not found. Using ChromeDriver version 128."
+          LATEST_DRIVER="128.0.0.0"
+        fi
+        
         echo "Using ChromeDriver version: $LATEST_DRIVER"
         wget "https://chromedriver.storage.googleapis.com/$LATEST_DRIVER/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip
