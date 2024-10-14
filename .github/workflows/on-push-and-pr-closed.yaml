@@ -14,9 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    # Install Google Chrome
     - name: Install Google Chrome
       run: |
         sudo apt-get update
@@ -25,12 +27,13 @@ jobs:
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
         sudo apt-get install -y libappindicator3-1 fonts-liberation
 
+    # Install ChromeDriver and match it with Chrome version
     - name: Install ChromeDriver
       run: |
         CHROME_VERSION=$(google-chrome --version | sed 's/[^0-9]*\([0-9]*\)\..*/\1/')
         echo "Chrome version is: $CHROME_VERSION"
         # Fallback to version 128 if 129 is not available
-        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_128")
+        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION" || curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_128")
         echo "Using ChromeDriver version: $LATEST_DRIVER"
         wget "https://chromedriver.storage.googleapis.com/$LATEST_DRIVER/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip
@@ -38,16 +41,20 @@ jobs:
         sudo chown root:root /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
 
+    # Install Node.js and npm
     - name: Install Node.js and npm
       run: |
         sudo apt-get install -y nodejs npm
 
+    # Install dependencies from package.json
     - name: Install dependencies
       run: npm install
 
+    # Run Selenium tests
     - name: Run Selenium tests
       run: node tests/testHomepageValidations.js
 
+    # Upload test artifacts (screenshots, logs)
     - name: Upload Test Artifacts (screenshots, logs)
       uses: actions/upload-artifact@v3
       with:
