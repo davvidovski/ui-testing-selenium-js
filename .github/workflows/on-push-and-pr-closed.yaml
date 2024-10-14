@@ -3,7 +3,7 @@ name: Run Selenium Tests - On Push and PR closed
 on:
   push:
     branches:
-      - main  
+      - main 
   pull_request:
     types: [closed]
 
@@ -43,7 +43,7 @@ jobs:
       run: node tests/testHomepageValidations.js
 
     - name: Upload Test Artifacts (screenshots, logs)
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: test-artifacts
         path: ./error-screenshots
