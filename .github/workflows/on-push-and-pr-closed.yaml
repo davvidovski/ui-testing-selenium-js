@@ -1,4 +1,4 @@
-name: Run Selenium Tests - On Push and PR closed
+name: Run Selenium Tests - On Push and PR closed 
 
 on:
   push:
