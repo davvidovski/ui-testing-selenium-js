@@ -1,15 +1,15 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-require('chromedriver');  // Automatically loads ChromeDriver
 
 async function createDriver() {
     let chromeOptions = new chrome.Options();
-    chromeOptions.addArguments('--no-sandbox');
-    chromeOptions.addArguments('--disable-dev-shm-usage');
-    chromeOptions.addArguments('--disable-gpu');
-    chromeOptions.addArguments('--headless');  // Add headless mode if needed
+    chromeOptions.addArguments('--headless'); // Run in headless mode
+    chromeOptions.addArguments('--no-sandbox'); // Required for some CI environments
+    chromeOptions.addArguments('--disable-dev-shm-usage'); // Overcomes limited resource problems
+    chromeOptions.addArguments('--disable-gpu'); // Applicable for older versions of Chrome
+    chromeOptions.addArguments('--start-maximized'); // Optionally keep this for local runs
 
-    // No need to explicitly set the path to ChromeDriver if 'chromedriver' npm package is being used
+    // Initialize the ChromeDriver with the specified options
     return await new Builder()
         .forBrowser('chrome')
         .setChromeOptions(chromeOptions)
