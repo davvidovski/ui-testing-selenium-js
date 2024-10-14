@@ -37,12 +37,11 @@ jobs:
         sudo chown root:root /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
         rm chromedriver_linux64.zip
-
-    - name: Install Node.js and npm (via NodeSource for latest versions)
+    
+    - name: Install Node.js and npm
       run: |
-        curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-        sudo apt-get install -y npm
+        sudo apt-get update
+        sudo apt-get install -y nodejs npm
 
     - name: Install dependencies
       run: npm install
