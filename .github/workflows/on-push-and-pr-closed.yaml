@@ -5,7 +5,9 @@ on:
     branches:
       - main
   pull_request:
-    types: [closed]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,17 +25,13 @@ jobs:
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
         sudo apt-get install -y libappindicator3-1 fonts-liberation
 
-    - name: Get Chrome version and install compatible ChromeDriver
+    - name: Install ChromeDriver
       run: |
-        # Get Chrome version (output is like "Google Chrome 129.x.x.x")
-        CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1)
+        CHROME_VERSION=$(google-chrome --version | sed 's/[^0-9]*\([0-9]*\)\..*/\1/')
         echo "Chrome version is: $CHROME_VERSION"
-
-        # Download the appropriate version of ChromeDriver
-        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-        echo "Latest compatible ChromeDriver version is: $LATEST_DRIVER"
-
-        # Download and install ChromeDriver
+        # Fallback to version 128 if 129 is not available
+        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_128")
+        echo "Using ChromeDriver version: $LATEST_DRIVER"
         wget "https://chromedriver.storage.googleapis.com/$LATEST_DRIVER/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip
         sudo mv chromedriver /usr/local/bin/
