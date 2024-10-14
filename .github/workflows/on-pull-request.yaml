@@ -28,4 +28,4 @@ jobs:
       run: npm install
 
     - name: Run Selenium tests
-      run: node tests\testHomepageValidations.js
+      run: node tests/testHomepageValidations.js
