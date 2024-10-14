@@ -37,6 +37,14 @@ jobs:
         sudo apt-get install -y nodejs
         sudo apt-get install -y npm
 
+    - name: Check Node.js and npm version
+      run: |
+        node -v
+        npm -v
+
+    - name: Clear npm cache
+      run: npm cache clean --force
+
     - name: Install dependencies
       run: npm install --legacy-peer-deps
 
