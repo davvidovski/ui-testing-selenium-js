@@ -1,3 +1,14 @@
+name: Run Selenium Tests - On Push and PR closed
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
