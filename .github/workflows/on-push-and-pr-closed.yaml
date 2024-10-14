@@ -30,17 +30,22 @@ jobs:
         sudo mv chromedriver /usr/local/bin/
         sudo chown root:root /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
+        rm chromedriver-linux64.zip # Clean up zip file to free space
 
-    - name: Install Node.js and npm
+    - name: Install Node.js and npm (via NodeSource for latest versions)
       run: |
-        sudo apt-get update
-        sudo apt-get install -y nodejs npm
+        curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+        sudo apt-get install -y npm
 
     - name: Install dependencies
       run: npm install
 
     - name: Run Selenium tests
       run: node tests/testHomepageValidations.js
+
+    - name: Create error screenshots directory if it doesn't exist
+      run: mkdir -p ./error-screenshots
 
     - name: Upload Test Artifacts (screenshots, logs)
       uses: actions/upload-artifact@v3
