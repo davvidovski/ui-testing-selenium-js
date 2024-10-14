@@ -1,14 +1,3 @@
-name: Run Selenium Tests - On Push and PR closed
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,12 +22,12 @@ jobs:
 
     - name: Install Node.js and npm
       run: |
-        curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
         sudo apt-get install -y nodejs
         sudo apt-get install -y npm
 
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
 
     - name: Run Selenium tests
       run: node tests/testHomepageValidations.js
