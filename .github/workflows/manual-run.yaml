@@ -1,4 +1,4 @@
-name: Manual Run
+name: Run Selenium Tests
 
 on:
   workflow_dispatch:
@@ -30,11 +30,16 @@ jobs:
 
     - name: Install Node.js and npm
       run: |
-        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-        sudo apt-get install -y nodejs
+        sudo apt-get install -y nodejs npm
 
     - name: Install dependencies
       run: npm install
 
     - name: Run Selenium tests
       run: node tests/testHomepageValidations.js
+
+    - name: Upload Test Artifacts (screenshots, logs)
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-artifacts
+        path: ./error-screenshots
