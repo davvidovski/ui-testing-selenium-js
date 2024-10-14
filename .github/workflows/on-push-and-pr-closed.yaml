@@ -17,21 +17,26 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install Google Chrome (Specific Version 129)
+    - name: Install Google Chrome
       run: |
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
         sudo apt-get install -y libappindicator3-1 fonts-liberation
 
-    - name: Install ChromeDriver (Specific Version 129)
+    - name: Get the Latest ChromeDriver version
+      id: get_chromedriver_version
       run: |
-        wget https://chromedriver.storage.googleapis.com/129.0.6668.100/chromedriver_linux64.zip
+        LATEST_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+        echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
+
+    - name: Install ChromeDriver (Latest Version)
+      run: |
+        wget https://chromedriver.storage.googleapis.com/${{ env.LATEST_VERSION }}/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip
-        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+        sudo mv chromedriver /usr/local/bin/
         sudo chown root:root /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
         rm chromedriver_linux64.zip
-        rm -rf chromedriver-linux64  # Clean up extracted folder
 
     - name: Install Node.js and npm (via NodeSource for latest versions)
       run: |
