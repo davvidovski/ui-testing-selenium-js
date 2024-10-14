@@ -3,7 +3,7 @@ name: Run Selenium Tests - On Push and PR closed
 on:
   push:
     branches:
-      - main 
+      - main
   pull_request:
     types: [closed]
 
@@ -25,10 +25,16 @@ jobs:
 
     - name: Get Chrome version and install compatible ChromeDriver
       run: |
-        CHROME_VERSION=$(google-chrome --version | sed 's/[^0-9]*\([0-9]*\)\..*/\1/')
+        # Get Chrome version (output is like "Google Chrome 129.x.x.x")
+        CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1)
         echo "Chrome version is: $CHROME_VERSION"
-        # Download the appropriate ChromeDriver for the installed Chrome version
-        wget https://chromedriver.storage.googleapis.com/$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)/chromedriver_linux64.zip
+
+        # Download the appropriate version of ChromeDriver
+        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+        echo "Latest compatible ChromeDriver version is: $LATEST_DRIVER"
+
+        # Download and install ChromeDriver
+        wget "https://chromedriver.storage.googleapis.com/$LATEST_DRIVER/chromedriver_linux64.zip"
         unzip chromedriver_linux64.zip
         sudo mv chromedriver /usr/local/bin/
         sudo chown root:root /usr/local/bin/chromedriver
