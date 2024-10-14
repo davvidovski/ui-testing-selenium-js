@@ -9,6 +9,7 @@ async function createDriver() {
     chromeOptions.addArguments('--disable-gpu');
     chromeOptions.addArguments('--headless');  // Add headless mode if needed
 
+    // No need to explicitly set the path to ChromeDriver if 'chromedriver' npm package is being used
     return await new Builder()
         .forBrowser('chrome')
         .setChromeOptions(chromeOptions)
