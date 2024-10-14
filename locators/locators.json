@@ -1,0 +1,17 @@
+{
+  "homepage": {
+    "agreeAndContinueButton": "//*[@id='onetrust-accept-btn-handler']",
+    "telerikLogo": "//*[@id='js-tlrk-nav']/section/div/figure/a[2]",
+    "allProductsLink": "//a[contains(@href, '/all-products')]",
+    "demosLink": "//nav//a[contains(@href, '/demos')]",
+    "servicesLink": "//nav//a[contains(@href, '/services')]",
+    "blogsLink": "//nav//a[contains(@href, '/blogs')]",
+    "docsAndSupportLink": "//a[@href='/support' and contains(text(), 'Docs')]",
+    "pricingLink": "//nav//a[@href='/purchase.aspx' and contains(text(),'Pricing')]",
+    "shoppingCartLink": "//a[contains(@class, 'cart') or contains(@href, 'cart')]",
+    "loginLink": "//a[contains(@href, '/account/') or contains(text(), 'Login')]",
+    "contactUsLink": "//a[contains(@href, '/contact') or contains(text(), 'Contact')]",
+    "freeTrialLink": "//a[contains(@href, '/free-trial') or contains(text(), 'Free Trial')]",
+    "searchInput": "//a[@href='/search' and @class='TK-Aside-Menu-Link js-tlrk-nav-search-link' and @title='Search']"
+  }
+}
