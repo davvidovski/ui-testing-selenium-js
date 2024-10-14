@@ -25,12 +25,13 @@ jobs:
 
     - name: Install ChromeDriver (Specific Version 129)
       run: |
-        wget https://storage.googleapis.com/chrome-for-testing-public/129.0.6668.100/linux64/chromedriver-linux64.zip
-        unzip chromedriver-linux64.zip
-        sudo mv chromedriver /usr/local/bin/
+        wget https://chromedriver.storage.googleapis.com/129.0.6668.100/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chown root:root /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
-        rm chromedriver-linux64.zip # Clean up zip file to free space
+        rm chromedriver_linux64.zip
+        rm -rf chromedriver-linux64  # Clean up extracted folder
 
     - name: Install Node.js and npm (via NodeSource for latest versions)
       run: |
