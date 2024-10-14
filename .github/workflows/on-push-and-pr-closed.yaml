@@ -17,7 +17,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install Google Chrome 128
+    - name: Install Google Chrome
       run: |
         sudo apt-get update
         sudo apt-get install -y wget
@@ -25,10 +25,14 @@ jobs:
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
         sudo apt-get install -y libappindicator3-1 fonts-liberation
 
-    - name: Install ChromeDriver for version 128
+    - name: Install ChromeDriver for latest Chrome version
       run: |
-        # Get ChromeDriver version for Chrome 128
-        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_128")
+        # Get Chrome version installed
+        CHROME_VERSION=$(google-chrome --version | sed 's/[^0-9]*\([0-9]*\)\..*/\1/')
+        echo "Chrome version is: $CHROME_VERSION"
+
+        # Get the matching ChromeDriver version
+        LATEST_DRIVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
         echo "Using ChromeDriver version: $LATEST_DRIVER"
 
         # Download and install ChromeDriver
