@@ -17,30 +17,24 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install Google Chrome
+    - name: Install Google Chrome (Specific Version 129)
       run: |
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
         sudo apt-get install -y libappindicator3-1 fonts-liberation
 
-    - name: Get the Latest ChromeDriver version
-      id: get_chromedriver_version
+    - name: Install ChromeDriver (Specific Version 129)
       run: |
-        LATEST_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
-        echo "LATEST_VERSION=$LATEST_VERSION" >> $GITHUB_ENV
-
-    - name: Install ChromeDriver (Latest Version)
-      run: |
-        wget https://chromedriver.storage.googleapis.com/${{ env.LATEST_VERSION }}/chromedriver_linux64.zip
+        wget https://chromedriver.storage.googleapis.com/129.0.6668.100/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip
         sudo mv chromedriver /usr/local/bin/
         sudo chown root:root /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
-        rm chromedriver_linux64.zip
-    
-    - name: Install Node.js and npm
+        rm chromedriver_linux64.zip # Clean up zip file to free space
+
+    - name: Install Node.js and npm (via NodeSource for latest versions)
       run: |
-        sudo apt-get update
+        curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
         sudo apt-get install -y nodejs npm
 
     - name: Install dependencies
