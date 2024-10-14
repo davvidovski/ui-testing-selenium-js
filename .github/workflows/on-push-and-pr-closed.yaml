@@ -1,0 +1,49 @@
+name: Run Selenium Tests - On Push and PR closed
+
+on:
+  push:
+    branches:
+      - main  
+  pull_request:
+    types: [closed]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Google Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install -y ./google-chrome-stable_current_amd64.deb
+        sudo apt-get install -y libappindicator3-1 fonts-liberation
+
+    - name: Install ChromeDriver
+      run: |
+        CHROME_VERSION=$(google-chrome --version | sed 's/[^0-9]*\([0-9]*\)\..*/\1/')
+        wget https://chromedriver.storage.googleapis.com/${CHROME_VERSION}/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver /usr/local/bin/
+        sudo chown root:root /usr/local/bin/chromedriver
+        sudo chmod +x /usr/local/bin/chromedriver
+
+    - name: Install Node.js and npm
+      run: |
+        sudo apt-get install -y nodejs npm
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Selenium tests
+      run: node tests/testHomepageValidations.js
+
+    - name: Upload Test Artifacts (screenshots, logs)
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-artifacts
+        path: ./error-screenshots
